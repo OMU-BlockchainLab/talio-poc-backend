@@ -1,0 +1,3 @@
+CREATE DATABASE "sappchat";
+CREATE DATABASE "sappchat_test";
+CREATE EXTENSION IF NOT EXISTS "citext";

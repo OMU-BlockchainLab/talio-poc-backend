@@ -1,0 +1,30 @@
+env: staging
+node_env: production
+repo: git@github.com:Sappchain-OU/sappchat-backend.git
+port: 80
+
+# Configuration from terraform output
+aws_region: eu-west-2
+aws_s3_bucket: sappchat-staging-files
+cluster: sappchat-staging
+
+image_name: sappchat-backend
+image_repository: 890991044668.dkr.ecr.eu-west-2.amazonaws.com/sappchat-backend
+task_role_arn: arn:aws:iam::890991044668:role/ecs/sappchat-staging-task-role
+execution_role_arn: arn:aws:iam::890991044668:role/ecs/sappchat-staging-execution-role
+
+subnets: ['subnet-0849baf505770800d', 'subnet-036a24fb8fda6bdc6']
+security_groups: ['sg-0f90deebf95d788fd']
+
+# App container configuration
+app_cpu: 512
+app_memory: 1024
+app_container_cpu: 512
+app_container_memory: 1024
+app_desired_count: 1
+
+# Non-sensitive vars
+cors_origin: "*"
+app_sentry_dsn: "https://c193c1e0140d4d479111d828657167c7@o554597.ingest.sentry.io/5683394"
+app_web3_fee_address: "0x549f836A60044D1Da953A0F8C33E15739669a1A7"
+app_database_logging_disabled: "true"

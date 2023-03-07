@@ -1,0 +1,16 @@
+- set_fact:
+    ssm_aws_access_key_id: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/AWS_ACCESS_KEY_ID') }}"
+    ssm_aws_secret_access_key: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/AWS_SECRET_ACCESS_KEY') }}"
+    ssm_frontend_url: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/FRONTEND_URL') }}"
+    ssm_backend_url: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/URL') }}"
+    ssm_database_url: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/DATABASE_URL') }}"
+    ssm_chat_database_url: "{{ lookup('aws_ssm', '/{{ cluster }}/chat/DATABASE_URL') }}"
+    ssm_redis_url: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/REDIS_URL') }}"
+    ssm_secrets_jwt: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/SECRETS_JWT') }}"
+    ssm_secrets_session: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/SECRETS_SESSION') }}"
+    ssm_sendgrid_api_key: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/SENDGRID_API_KEY') }}"
+    ssm_aws_app_topic_arn: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/AWS_APP_TOPIC_ARN') }}"
+    ssm_onesignal_app_id: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/ONESIGNAL_APP_ID') }}"
+    ssm_onesignal_api_key: "{{ lookup('aws_ssm', '/{{ cluster }}/backend/ONESIGNAL_API_KEY') }}"
+
+

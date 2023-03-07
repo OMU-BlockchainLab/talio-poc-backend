@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  # Data API and authentication/authorization
+  app: &app
+    image: api
+    build:
+      context: ./
+      dockerfile: Dockerfile-local
+    hostname: api
+    tty: true
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/home/node/app:cached
+      - node_modules:/home/node/app/node_modules
+
+  api:
+    <<: *app
+    command: yarn dev
+    ports:
+      - '3002:3002'
+
+  # SQL and document data store
+  db:
+    image: postgres:13.1-alpine
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    user: postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./misc/main_schema.sql:/docker-entrypoint-initdb.d/main_schema
+
+  # Distributed in-memory cache
+  redis:
+    image: redis:5.0.9-alpine
+    volumes:
+      - redis:/data
+    user: redis
+    depends_on:
+      - db
+    ports:
+      - '6379:6379'
+
+volumes:
+  db:
+  redis:
+  node_modules:

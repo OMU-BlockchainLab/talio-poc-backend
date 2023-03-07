@@ -1,0 +1,23 @@
+FROM node:14-alpine3.13
+
+WORKDIR /home/node/app
+
+RUN apk --no-cache add --virtual builds-deps build-base python3 curl git postgresql-client
+
+COPY package.json yarn.lock .yarnrc.yml .dockerignore ./
+COPY .yarn ./.yarn/
+COPY .sequelizerc jest.config.js tsconfig.json ./
+COPY .env .env.test .env.development ./
+COPY db ./db/
+COPY src ./src/
+COPY misc ./misc/
+COPY static ./static/
+
+ENV TZ 'UTC'
+
+RUN yarn set version 3.1.1
+RUN yarn install
+
+EXPOSE 80
+
+CMD ["yarn", "start"]

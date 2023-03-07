@@ -1,0 +1,74 @@
+version: 2
+
+references:
+  install_dependencies: &install_dependencies
+    run:
+      name: Install dependencies
+      command: |
+        apk add --no-cache --virtual build-dependencies yarn git build-base gcc wget python3
+        yarn set version 3.1.1
+        yarn install
+
+  setup_database: &setup_database
+    run:
+      name: Database setup
+      command: |
+        yarn db:migrate
+        yarn db:seed
+
+defaults: &defaults
+  docker:
+    - image: node:14-alpine3.13
+      environment:
+        - NODE_ENV: test
+        - DATABASE_URL: postgresql://circleci@localhost/sappchat_test
+        - REDIS_URL: redis://localhost:6379/0
+    - image: circleci/postgres:11.1
+      environment:
+        - POSTGRES_DB: sappchat_test
+        - POSTGRES_USER: circleci
+    - image: redis:alpine
+
+  working_directory: ~/repo
+
+jobs:
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - *install_dependencies
+      - *setup_database
+
+      - run:
+          name: run tests
+          command: NODE_OPTIONS="--max-old-space-size=2048" yarn test
+
+  deploy:
+    docker:
+      - image: startupcraftio/circleci-aws-deployment:1.1
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Deploy to AWS
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              AWS_DEFAULT_REGION=eu-west-2 ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook ansible/release-deploy.yml -i ansible/staging --extra-vars "branch=master aws_profile=default" -v -e 'ansible_python_interpreter=/usr/bin/python3'
+            elif [ "${CIRCLE_BRANCH}" == "production" ]; then
+              AWS_DEFAULT_REGION=eu-west-2 ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook ansible/release-deploy.yml -i ansible/production --extra-vars "branch=production aws_profile=default" -v -e 'ansible_python_interpreter=/usr/bin/python3'
+            fi
+
+workflows:
+  version: 2
+  deployment:
+    jobs:
+      - test
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
+                - production

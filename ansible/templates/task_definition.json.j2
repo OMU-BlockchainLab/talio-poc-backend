@@ -1,0 +1,116 @@
+{
+  "family": "backend-{{ env }}",
+  "volumes": [],
+  "networkMode": "awsvpc",
+  "placementConstraints": [],
+  "taskRoleArn": "{{ task_role_arn }}",
+  "executionRoleArn": "{{ execution_role_arn }}",
+  "requiresCompatibilities": ["FARGATE"],
+  "memory": "{{ app_memory }}",
+  "cpu": "{{ app_cpu }}",
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "{{ image_repository }}:{{ image_tag }}",
+      "memory": {{ app_container_memory }},
+      "cpu": {{ app_container_cpu }},
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+            "awslogs-group": "{{ cluster }}/ecs/backend.log",
+            "awslogs-region": "{{ aws_region }}",
+            "awslogs-stream-prefix": "backend"
+        }
+      },
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "{{ node_env }}"
+        },
+        {
+          "name": "PORT",
+          "value": "{{ port }}"
+        },
+        {
+          "name": "AWS_REGION",
+          "value": "{{ aws_region }}"
+        },
+        {
+          "name": "AWS_ACCESS_KEY_ID",
+          "value": "{{ ssm_aws_access_key_id }}"
+        },
+        {
+          "name": "AWS_SECRET_ACCESS_KEY",
+          "value": "{{ ssm_aws_secret_access_key }}"
+        },
+        {
+          "name": "AWS_S3_BUCKET",
+          "value": "{{ aws_s3_bucket }}"
+        },
+        {
+          "name": "AWS_SNS_APP_TOPIC",
+          "value": "{{ ssm_aws_app_topic_arn }}"
+        },
+        {
+          "name": "FRONTEND_URL",
+          "value": "{{ ssm_frontend_url }}"
+        },
+        {
+          "name": "BACKEND_URL",
+          "value": "{{ ssm_backend_url }}"
+        },
+        {
+          "name": "DATABASE_URL",
+          "value": "{{ ssm_database_url }}"
+        },
+        {
+          "name": "CHAT_DATABASE_URL",
+          "value": "{{ ssm_chat_database_url }}"
+        },
+        {
+          "name": "REDIS_URL",
+          "value": "{{ ssm_redis_url }}"
+        },
+        {
+          "name": "SECRETS_JWT",
+          "value": "{{ ssm_secrets_jwt }}"
+        },
+        {
+          "name": "SECRETS_SESSION",
+          "value": "{{ ssm_secrets_session }}"
+        },
+        {
+          "name": "SENDGRID_API_KEY",
+          "value": "{{ ssm_sendgrid_api_key }}"
+        },
+        {
+          "name": "SENTRY_DSN",
+          "value": "{{ app_sentry_dsn }}"
+        },
+        {
+          "name": "ONESIGNAL_APP_ID",
+          "value": "{{ ssm_onesignal_app_id }}"
+        },
+        {
+          "name": "ONESIGNAL_API_KEY",
+          "value": "{{ ssm_onesignal_api_key }}"
+        },
+        {
+          "name": "WEB3_FEE_ADDRESS",
+          "value": "{{ app_web3_fee_address }}"
+        },
+        {
+          "name": "DATABASE_LOGGING_DISABLED",
+          "value": "{{ app_database_logging_disabled }}"
+        }
+      ]
+    }
+  ]
+}

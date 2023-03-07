@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "outDir": "build",
+    "lib": ["es2015"],
+    "target": "es2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": false,
+    "sourceMap": true,
+    "allowJs": true,
+    "importHelpers": true,
+    "skipLibCheck": true,
+    "removeComments": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "baseUrl": "src",
+    "paths": { "*": ["*"] },
+    "plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
+  },
+  "include": ["**/*.ts", "**/*.js"],
+  "exclude": [
+    ".circleci",
+    "node_modules",
+    "build",
+    "ansible",
+    ".vscode",
+    "static"
+  ]
+}
